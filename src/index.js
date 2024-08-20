@@ -49,6 +49,28 @@ app.post("/signup", async(req, res) => {
 
 
 
+//login user
+app.post("/login", async(req, res) => {
+  try{
+    const check = await collection.findOne({email: req.body.email});
+    if(!check){
+      res.send("user name cannot be found");
+    }
+
+    // compare hashed password from the database
+    const isPasswordMatch = await bcrypt.compare(req.body.password, check.password);
+    if(isPasswordMatch){
+      res.render("home");
+    }else{
+      req.send("wrong password");
+    }
+  }catch{
+    res.send("wrong details");
+  }
+});
+
+
+
 const port = 3000;
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
